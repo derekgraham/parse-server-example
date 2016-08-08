@@ -12,6 +12,16 @@ if (!databaseUri) {
 }
 console.log('DEREKG was here - databaseUri = ', databaseUri);
 
+if (process.env.APNS_ENABLE) {
+  pushConfig['ios'] = [
+    {
+      pfx: 'certs/treasure-quest.p12', // P12 file only
+      // passphrase: '2storyboards',
+      bundleId: 'com.derekgraham.treasurequest',  // change to match bundleId
+      production: false // dev certificate
+    }
+  ];
+}
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
@@ -19,8 +29,9 @@ var api = new ParseServer({
   appId: process.env.APP_ID || 'myAppId',
   masterKey: process.env.MASTER_KEY || 'myMasterKey', //Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
+  push: pushConfig,
   liveQuery: {
-    classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
+        classNames: ['Posts', 'Comments'] // List of classes to support for query subscriptions
   }
 });
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
